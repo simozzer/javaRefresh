@@ -27,6 +27,7 @@ public class Exercise {
             lists[min] = tmp;
         }
 
+
         //report
         for (int li = 0; li < LIST_COUNT; li++){
             System.out.println(li);
