@@ -31,9 +31,9 @@ public abstract class AbstractTokenizer implements Tokenizer {
     protected int numChars = 0;
     protected char[] text = null;
 
-    protected abstract createBuffer(int bufferSize);
+    protected abstract void createBuffer(int bufferSize);
 
-    protected abstract fillBuffer() throws IOException;
+    protected abstract boolean fillBuffer() throws IOException;
 
     public Tokenizer skipSpaces(boolean skip) {
         skipSpaces = skip;
@@ -67,13 +67,22 @@ public abstract class AbstractTokenizer implements Tokenizer {
             throw new IllegalArgumentException("arg lengths differ");
         this.openquotes = openquotes;
         this.closequotes = closequotes;
-        this.testquotes = openquotes,length() > 0;
+        this.testquotes = openquotes.length() > 0;
         return this;
     }
 
     public Tokenizer trackPosition(boolean track) {
         if (text != null) throw new IllegalStateException();
-        trackPosition = trck;
+        trackPosition = track;
+        return this;
+    }
+
+    public Tokenizer keywords(String[] keywords) {
+        if (keywords != null) {
+            keywordMap = new HashMap(keywords.length);
+            for (int i=0; i < keywords.length; i++) keywordMap.put(keywords[i], i);
+        }
+        else keywordMap = null;
         return this;
     }
 
@@ -87,7 +96,7 @@ public abstract class AbstractTokenizer implements Tokenizer {
     public int tokenType() { return tokenType; }
 
     public String tokenText() {
-        if (text = null || tokenStart >= numChars) return null;
+        if (text == null || tokenStart >= numChars) return null;
         return new String(text, tokenStart, tokenEnd - tokenStart);
     }
 
@@ -184,7 +193,7 @@ public abstract class AbstractTokenizer implements Tokenizer {
     }
 
     public int scan(String delimiter, boolean matchall, boolean extendCurrentToken, boolean includeDelimiter, boolean skipDelimiter ) throws IOException {
-        return scan(delimiter.toCharArray, matchall, extendCurrentToken, includeDelimiter, skipDelimiter);
+        return scan(delimiter.toCharArray(), matchall, extendCurrentToken, includeDelimiter, skipDelimiter);
     }
     protected int scan(char [ ] delimiter, boolean matchall, boolean extendCurrentToken, boolean includeDelimiter, boolean skipDelimiter) throws IOException {
         if (matchall && !includeDelimiter && !skipDelimiter)
@@ -199,7 +208,7 @@ public abstract class AbstractTokenizer implements Tokenizer {
         int delimiterMatchIndex = 0;
         String delimString = null;
         if (!matchall && delimiter.length >0)
-            delimString = new string(delimiter);
+            delimString = new String(delimiter);
 
         while (!eof) {
             if (delimiter.length == 1) {
@@ -213,7 +222,7 @@ public abstract class AbstractTokenizer implements Tokenizer {
                 else delimiterMatchIndex = 0;
             }
             else {
-                if delimString.indexOf(text[p] != -1) break;
+                if (delimString.indexOf(text[p]) != -1) break;
 
             }
 

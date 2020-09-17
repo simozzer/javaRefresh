@@ -1,5 +1,7 @@
 package je3.classes;
 
+import java.io.IOException;
+
 public interface Tokenizer {
     public static final int EOF=-1;
     public static final int SPACE=-2;
