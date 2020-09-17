@@ -108,11 +108,11 @@ public class IntList implements Comparable {
         for (int i=0; i<size; i++) {
             int min = i;
             for (int j=i ; j<100;j++) {
-                if (get(j) < get(min) min = j;
+                if (get(j) < get(min)) {min = j;}
             }
             int tmp;
             tmp = get(i);
-            set(i,get(min);
+            set(i,get(min));
             set(min, tmp);
         }
     }
