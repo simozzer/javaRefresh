@@ -38,6 +38,7 @@ public class ReaderTokenizer extends AbstractTokenizer{
         return true;
     }
 
+
     public static class Test {
         public static void main(String[] args) throws IOException {
             Reader in = new FileReader(args[0]);
