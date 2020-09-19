@@ -39,7 +39,6 @@ public class ReaderTokenizer extends AbstractTokenizer{
     }
 
     public static class Test {
-
         public static void main(String[] args) throws IOException {
             Reader in = new FileReader(args[0]);
             PrintWriter out = new PrintWriter(new FileWriter(args[0] + ".copy"));
