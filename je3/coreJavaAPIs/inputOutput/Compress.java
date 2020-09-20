@@ -21,24 +21,32 @@ public class Compress {
     public static void zipDirectory(String dir, String zipfile) throws IOException, IllegalArgumentException {
         File d = new File(dir);
         if (!d.isDirectory()) throw new IllegalArgumentException("Compress: not a directory: " + dir);
-        String[] entries = d.list();
-        byte[] buffer = new byte[4096];
-        int bytes_read;
+
 
         ZipOutputStream out = new ZipOutputStream(new FileOutputStream(zipfile));
 
-        for (int i = 0; i < entries.length; i++) {
-            File f = new File(d, entries[i]);
-            if (f.isDirectory()) continue; // skip directories
-            FileInputStream in = new FileInputStream(f);
-            ZipEntry entry = new ZipEntry(f.getPath());
-            out.putNextEntry(entry);
-            while ((bytes_read = in.read(buffer)) != -1) {
-                out.write(buffer, 0, bytes_read);
-            }
-            in.close();
-        }
+        doZipDir(d,out);
         out.close();
+    }
+
+    protected static void doZipDir(File dir, ZipOutputStream out) throws IOException {
+        String[] entries = dir.list();
+        byte[] buffer = new byte[4096];
+        int bytes_read;
+        for (int i = 0; i < entries.length; i++) {
+            File f = new File(dir, entries[i]);
+            if (f.isDirectory()) {
+                doZipDir(f, out);
+            } else {
+                FileInputStream in = new FileInputStream(f);
+                ZipEntry entry = new ZipEntry(f.getPath());
+                out.putNextEntry(entry);
+                while ((bytes_read = in.read(buffer)) != -1) {
+                    out.write(buffer, 0, bytes_read);
+                }
+                in.close();
+            }
+        }
     }
 
     public static class Test {
@@ -57,7 +65,7 @@ public class Compress {
             }
 
             if ((new File(to).exists())) {
-                System.err.println("Compress: wont' overwriye existing file: " + to);
+                System.err.println("Compress: wont' overwrite existing file: " + to);
                 System.exit(0);
             }
 
