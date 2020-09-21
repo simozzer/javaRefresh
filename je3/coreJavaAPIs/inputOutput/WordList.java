@@ -20,13 +20,15 @@ public class WordList {
 
         long[] wordPositions = new long[words.length];
 
-        f.seek(4L + (8 * wordPositions.length));
-
+        f.seek(8L);
         for(int i=0; i < wordPositions.length; i++) {
             wordPositions[i] = f.getFilePointer();
             f.writeUTF(words[i]);
         }
+        long startOfLookup = f.getFilePointer();
+        // TODO:: write length of each string into table (as offset from previous string).
 
+        // TODO:
         f.seek(0L);
         f.writeInt(wordPositions.length);
         for(int i=0; i <wordPositions.length; i++) f.writeLong(wordPositions[i]);
