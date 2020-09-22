@@ -7,27 +7,30 @@ public class Exercise1 extends Thread {
 
 
     public static void main(String[] args) {
-        Object res1 = "res1";
-        long ms = System.currentTimeMillis();
-        Exercise1[] threads = new Exercise1[args.length];
-        for(int i=0; i < args.length; i++) threads[i] = new Exercise1(args[i]);
-        for(int i=0; i < args.length; i++) {
-            synchronized (res1) {
-                threads[i].start();
-            }
-            try {
-                threads[i].join();
-            }
-        }
 
-        /*
-        try {
-            for(int i=0; i <args.length; i++) {
-                threads[i].join();
+        boolean threaded = true;
+        long ms = System.currentTimeMillis();
+        if (threaded) {
+            Exercise1[] threads = new Exercise1[args.length];
+            for (int i = 0; i < args.length; i++) threads[i] = new Exercise1(args[i]);
+
+
+            for (int i = 0; i < args.length; i++) threads[i].start();
+
+
+            try {
+                for (int i = 0; i < args.length; i++) {
+                    threads[i].join();
+                }
+            } catch (InterruptedException e) {
+            }
+            ;
+        }
+        else {
+            for (int i = 0; i < args.length; i++) {
+                Exercise1.countLines(args[i]);
             }
         }
-        catch(InterruptedException e) {};
-         */
 
         System.out.println("Duration: " + String.valueOf(System.currentTimeMillis() - ms));
     }
@@ -38,8 +41,7 @@ public class Exercise1 extends Thread {
         this.filename = filename;
     }
 
-    @Override
-    public void run() {
+    static void countLines(String filename) {
         File f = new File(filename);
         if (!f.exists())  throw new IllegalArgumentException("LineCounterThread: file does not exist " + filename);
         if (!f.canRead()) throw new IllegalArgumentException("LineCounterThread: cannot read " + filename);
@@ -58,5 +60,10 @@ public class Exercise1 extends Thread {
             System.err.println("LineCounterThread: IOException " + e.getMessage());
             System.exit(0);
         }
+    }
+
+    @Override
+    public void run() {
+        countLines(filename);
     }
 }

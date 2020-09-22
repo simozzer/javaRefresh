@@ -18,6 +18,10 @@ public class IntList implements Comparable {
         this.size = orig.size;
     }
 
+    public static SynchronizedIntList synchronizedIntList(IntList source) {
+        return new SynchronizedIntList(source);
+    }
+
     public int size() { return size;}
 
     public int get(int index) {
@@ -115,6 +119,40 @@ public class IntList implements Comparable {
             set(i,get(min));
             set(min, tmp);
         }
+    }
+
+    public static class SynchronizedIntList {
+
+        private IntList origList;
+        public SynchronizedIntList(IntList orig) {
+            origList = orig;
+        }
+
+        public synchronized int size() { return  origList.size(); }
+
+        public synchronized int get(int index) { return origList.get(index); }
+
+        public synchronized void add(int val) { origList.add(val);}
+
+        public synchronized void set(int index, int val) { origList.set(index, val); }
+
+        public synchronized void clear() { origList.clear();}
+
+        public synchronized void trim() {origList.trim();}
+
+        public synchronized int[] toArray() { return origList.toArray();}
+
+        public synchronized String toString() { return origList.toString();}
+
+        public synchronized boolean equals(Object o) { return origList.equals(o); }
+
+        public synchronized int hashCode() { return origList.hashCode(); }
+
+        public synchronized int compareTo(Object o) { return origList.compareTo(o);}
+
+        public synchronized void setCapacity(int cap) { origList.setCapacity(cap);}
+
+        public synchronized void sort() { origList.sort();}
     }
 
 }
